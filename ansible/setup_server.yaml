@@ -1,0 +1,21 @@
+---
+- name: Install keydb
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create a basic ssh key
+      # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/ssh_key_module.html#ansible-collections-hetzner-hcloud-ssh-key-module
+      hetzner.hcloud.ssh_key:
+        name: my-ssh-key
+        public_key: ssh-ed25519 AAAAC3....
+        state: present
+    - name: Create docker host
+      # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/server_module.html#ansible-collections-hetzner-hcloud-server-module
+      hetzner.hcloud.server:
+        name: my-server-1
+        server_type: cx11
+        image: docker-ce
+        location: fsn1
+        ssh_keys:
+          - my-ssh-key
+        state: started
