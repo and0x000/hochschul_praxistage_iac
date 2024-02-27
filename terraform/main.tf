@@ -17,6 +17,11 @@ variable "hcloud_token" {
   sensitive = true
 }
 
+variable "node_count" {
+  type    = number
+  default = 3
+}
+
 # https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs
 provider "hcloud" {
   token = var.hcloud_token
@@ -30,7 +35,9 @@ resource "hcloud_ssh_key" "my_ssh_key" {
 
 # https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs/resources/server
 resource "hcloud_server" "my_server" {
-  name        = "my-server-1"
+  count = var.node_count
+
+  name        = "my-server-${count.index}"
   image       = "docker-ce"
   location    = "nbg1"
   ssh_keys    = [ "my_ssh_key" ]
@@ -50,7 +57,8 @@ resource "ansible_host" "docker_nodes" {
   depends_on = [
     hcloud_server.my_server
   ]
-  name   = hcloud_server.my_server.ipv4_address
+  count  = var.node_count
+  name   = hcloud_server.my_server[count.index].ipv4_address
   groups = ["docker_nodes"]
   variables = {
     ansible_user                 = "root",
