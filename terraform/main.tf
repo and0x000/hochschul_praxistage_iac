@@ -26,7 +26,7 @@ resource "hcloud_ssh_key" "my_ssh_key" {
 
 # https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs/resources/server
 resource "hcloud_server" "my_server" {
-  name        = "my_server_1"
+  name        = "my-server-1"
   image       = "docker-ce"
   location    = "nbg1"
   ssh_keys    = [ "my_ssh_key" ]
