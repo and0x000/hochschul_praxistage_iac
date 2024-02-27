@@ -18,3 +18,7 @@ terraform init
 ## ansible inventory from terraform.tfstate
 
 `ansible-inventory -i inventory.yaml --graph --vars`
+
+## run ansible task
+
+`ansible-playbook -i inventory.yaml ping.yaml`
