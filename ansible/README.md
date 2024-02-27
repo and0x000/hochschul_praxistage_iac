@@ -20,3 +20,7 @@ ansible-galaxy collection install -r requirements.yml
 ## refer to inventory
 
 `ansible-playbook -i inventory_hcloud.yaml <task>.yaml`
+
+## run task
+
+`ansible-playbook -i inventory_hcloud.yaml ping.yaml`
