@@ -5,3 +5,7 @@
 ```
 terraform init
 ```
+
+## credential handling
+
+`terraform.tfvars` file
