@@ -16,3 +16,7 @@ ansible-galaxy collection install -r requirements.yml
 ## system setup
 
 `ansible-playbook setup_server.yaml`
+
+## refer to inventory
+
+`ansible-playbook -i inventory_hcloud.yaml <task>.yaml`
