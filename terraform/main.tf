@@ -4,6 +4,10 @@ terraform {
     hcloud = {
       source = "hetznercloud/hcloud"
     }
+    ansible = {
+      source  = "ansible/ansible"
+      version = "1.1.0"
+    }
   }
 }
 
@@ -40,5 +44,17 @@ resource "hcloud_server" "my_server" {
   depends_on = [
     hcloud_ssh_key.my_ssh_key
   ]
+}
+
+resource "ansible_host" "docker_nodes" {
+  depends_on = [
+    hcloud_server.my_server
+  ]
+  name   = hcloud_server.my_server.ipv4_address
+  groups = ["docker_nodes"]
+  variables = {
+    ansible_user                 = "root",
+    ansible_ssh_private_key_file = "~/.ssh/id_ed25519"
+  }
 }
 

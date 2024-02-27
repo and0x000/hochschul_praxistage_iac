@@ -14,3 +14,7 @@ terraform init
 
 - `terraform plan`
 - `terraform apply`
+
+## ansible inventory from terraform.tfstate
+
+`ansible-inventory -i inventory.yaml --graph --vars`
