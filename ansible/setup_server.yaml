@@ -2,6 +2,12 @@
 - name: Setup server
   hosts: localhost
   gather_facts: false
+  vars:
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html
+    servers:
+      - { name: 'my-server-1', type: 'cx11', location: 'fsn1' }
+      - { name: 'my-server-2', type: 'cx11', location: 'hel1' }
+      - { name: 'my-server-3', type: 'cx11', location: 'nbg1' }
   tasks:
     - name: Create a basic ssh key
       # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/ssh_key_module.html#ansible-collections-hetzner-hcloud-ssh-key-module
@@ -11,11 +17,13 @@
         state: present
     - name: Create docker host
       # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/server_module.html#ansible-collections-hetzner-hcloud-server-module
+      # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_loops.html
       hetzner.hcloud.server:
-        name: my-server-1
-        server_type: cx11
+        name: "{{ item.name }}"
+        server_type: "{{ item.type }}"
         image: docker-ce
-        location: fsn1
+        location: "{{ item.location }}"
         ssh_keys:
           - my-ssh-key
         state: started
+      loop: "{{ servers }}"
