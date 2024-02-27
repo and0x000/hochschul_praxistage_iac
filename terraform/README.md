@@ -9,3 +9,8 @@ terraform init
 ## credential handling
 
 `terraform.tfvars` file
+
+## running terraform
+
+- `terraform plan`
+- `terraform apply`
