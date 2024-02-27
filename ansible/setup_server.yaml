@@ -1,5 +1,5 @@
 ---
-- name: Install keydb
+- name: Setup server
   hosts: localhost
   gather_facts: false
   tasks:
