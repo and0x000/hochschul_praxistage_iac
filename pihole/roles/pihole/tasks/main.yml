@@ -1,0 +1,23 @@
+---
+- name: install required package
+  ansible.builtin.apt:
+    update_cache: true
+    pkg:
+      - git
+- name: get pihole repo
+  ansible.builtin.git:
+    repo: "https://github.com/pi-hole/pi-hole.git"
+    dest: /opt/pihole
+- name: create /etc/pihole directory
+  ansible.builtin.file:
+    path: /etc/pihole
+    state: directory
+- name: install vars file
+  ansible.builtin.template:
+    src: setupVars.conf.j2
+    dest: /etc/pihole/setupVars.conf
+- name: run installation script
+  ansible.builtin.shell:
+    executable: /usr/bin/bash
+    chdir: "/opt/pihole/automated install"
+    cmd: 'useUpdateVars="true" bash basic-install.sh --unattended'

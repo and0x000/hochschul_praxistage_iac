@@ -1,0 +1,11 @@
+---
+#- name: Install Pihole system setup
+#  hosts: my-server-1
+#  roles:
+#    - pihole
+#    - ssl
+
+# - name: Install Pihole docker setup
+#   hosts: my-server-1
+#   roles:
+#     - pihole_docker

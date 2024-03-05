@@ -1,0 +1,19 @@
+---
+- name: install required package
+  ansible.builtin.apt:
+    update_cache: true
+    pkg:
+      - lighttpd-mod-openssl
+- name: Create private key (RSA, 4096 bits)
+  community.crypto.openssl_privatekey:
+    path: /etc/ssl/private/pihole.key
+- name: Create simple self-signed certificate
+  community.crypto.x509_certificate:
+    path: /etc/ssl/certs/pihole.key
+    privatekey_path: /etc/ssl/private/pihole.key
+    provider: selfsigned
+- name: add ssl config for lighttpd
+  ansible.builtin.template:
+    src: external.conf.j2
+    dest: /etc/lighttpd/conf-enabled/external.conf
+  notify: reload lighttpd

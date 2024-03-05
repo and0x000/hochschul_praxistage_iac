@@ -1,0 +1,23 @@
+---
+- name: create a pihole container
+  community.docker.docker_container:
+    name: pihole
+    image: pihole/pihole:latest
+    state: present
+    # recreate: true
+    pull: yes
+    restart_policy: unless-stopped
+    network_mode: host
+    # published_ports:
+    #   - "53:53/tcp"
+    #   - "53:53/udp"
+    #   - "80:80/tcp"
+    volumes_from:
+      - './etc-pihole:/etc/pihole'
+      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+    env:
+      TZ: "{{ timezone }}"
+      WEBPASSWORD: "{{ pihole_hash_psw }}"
+      PIHOLE_DNS_: "{{ pihole_dns }}"
+      QUERY_LOGGING: "true"
+      BLOCKING_ENABLED: "true"
