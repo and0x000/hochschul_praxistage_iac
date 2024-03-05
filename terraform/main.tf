@@ -33,15 +33,42 @@ resource "hcloud_ssh_key" "my_ssh_key" {
   public_key = file("~/.ssh/id_ed25519.pub")
 }
 
+resource "hcloud_firewall" "ssh" {
+  name = "ssh"
+
+  rule {
+    direction = "in"
+    protocol  = "icmp"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "22"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  }
+}
+
+
 # https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs/resources/server
 resource "hcloud_server" "my_server" {
   count = var.node_count
 
-  name        = "my-server-${count.index}"
-  image       = "docker-ce"
-  location    = "nbg1"
-  ssh_keys    = [ "my_ssh_key" ]
-  server_type = "cx11"
+  name         = "my-server-${count.index}"
+  image        = "docker-ce"
+  location     = "nbg1"
+  ssh_keys     = [ "my_ssh_key" ]
+  server_type  = "cx11"
+  firewall_ids = [
+    hcloud_firewall.ssh.id
+  ]
 
   public_net {
     ipv4_enabled = true
@@ -49,7 +76,8 @@ resource "hcloud_server" "my_server" {
   }
 
   depends_on = [
-    hcloud_ssh_key.my_ssh_key
+    hcloud_ssh_key.my_ssh_key,
+    hcloud_firewall.ssh
   ]
 }
 
