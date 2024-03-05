@@ -7,7 +7,7 @@
       # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/ssh_key_module.html#ansible-collections-hetzner-hcloud-ssh-key-module
       hetzner.hcloud.ssh_key:
         name: my-ssh-key
-        public_key: ssh-ed25519 AAAAC3....
+        public_key: "{{ lookup('ansible.builtin.file', '~/.ssh/id_ed25519.pub') }}"
         state: present
     - name: Create docker host
       # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/server_module.html#ansible-collections-hetzner-hcloud-server-module
