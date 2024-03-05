@@ -15,6 +15,30 @@
         name: my-ssh-key
         public_key: "{{ lookup('ansible.builtin.file', '~/.ssh/id_ed25519.pub') }}"
         state: present
+    - name: Create firewall
+      register: firewall
+      # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/firewall_module.html#ansible-collections-hetzner-hcloud-firewall-module
+      # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_loops.html
+      hetzner.hcloud.firewall:
+        name: my-firewall
+        labels: {
+          firewall: ssh
+        }
+        rules:
+          - description: allow icmp from everywhere
+            direction: in
+            protocol: icmp
+            source_ips:
+              - 0.0.0.0/0
+              - ::/0
+          - description: allow ssh from everywhere
+            direction: in
+            protocol: tcp
+            port: 22
+            source_ips:
+              - 0.0.0.0/0
+              - ::/0
+        state: present
     - name: Create docker host
       # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/server_module.html#ansible-collections-hetzner-hcloud-server-module
       # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_loops.html
@@ -25,5 +49,7 @@
         location: "{{ item.location }}"
         ssh_keys:
           - my-ssh-key
+        firewalls:
+          - "{{ firewall['hcloud_firewall']['id'] }}"
         state: started
       loop: "{{ servers }}"
