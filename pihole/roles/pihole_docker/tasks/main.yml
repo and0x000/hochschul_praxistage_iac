@@ -1,23 +1,28 @@
 ---
+- name: stop systemd-resolved.service
+  ansible.builtin.service:
+    name: systemd-resolved.service
+    state: stopped
+- name: update nameserver
+  ansible.builtin.copy:
+    content: |
+      nameserver 127.0.0.1
+      nameserver 185.12.64.1
+
+    dest: /etc/resolv.conf
 - name: create a pihole container
   community.docker.docker_container:
     name: pihole
-    image: pihole/pihole:latest
-    state: present
-    # recreate: true
-    pull: yes
-    restart_policy: unless-stopped
-    network_mode: host
-    # published_ports:
-    #   - "53:53/tcp"
-    #   - "53:53/udp"
-    #   - "80:80/tcp"
-    volumes_from:
-      - './etc-pihole:/etc/pihole'
-      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+    image: pihole/pihole
+    # network_mode: host
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"
+    volumes:
+      - "./etc-pihole:/etc/pihole"
+      - "./etc-dnsmasq.d:/etc/dnsmasq.d"
     env:
       TZ: "{{ timezone }}"
-      WEBPASSWORD: "{{ pihole_hash_psw }}"
+      WEBPASSWORD: "{{ pihole_web_pw }}"
       PIHOLE_DNS_: "{{ pihole_dns }}"
-      QUERY_LOGGING: "true"
-      BLOCKING_ENABLED: "true"

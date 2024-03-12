@@ -1,3 +1,3 @@
 ---
 timezone: "Europ/Berlin"
-pihole_dns: 185.12.64.1;185.12.64.2
+pihole_dns: 185.12.64.1;185.12.64.2;2a01:4ff:ff00::add:1;2a01:4ff:ff00::add:2

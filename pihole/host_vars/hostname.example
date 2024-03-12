@@ -1,2 +1,3 @@
 ---
 pihole_hash_psw: foo_bar
+pihole_web_pw: foo_bar
