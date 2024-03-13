@@ -3,12 +3,10 @@
   ansible.builtin.service:
     name: systemd-resolved.service
     state: stopped
+    enabled: false
 - name: update nameserver
   ansible.builtin.copy:
-    content: |
-      nameserver 127.0.0.1
-      nameserver 185.12.64.1
-
+    src: resolv.conf
     dest: /etc/resolv.conf
 - name: create a pihole container
   community.docker.docker_container:
